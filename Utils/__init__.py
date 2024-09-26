@@ -7,11 +7,11 @@ import pyperclip
 
 # Selenuim
 # Configuration et lancement de WebDriver
-from selenium import webdriver
 from selenium_stealth import stealth
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
@@ -19,6 +19,14 @@ from selenium.webdriver.chrome.options import Options
 
 # Systeme de logging
 import logging
+import os
+
+# Créer un répertoire pour les logs s'il n'existe pas
+log_directory = 'logs'
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+log_file = os.path.join(log_directory, 'app.log')
 
 logging.basicConfig( filename="log.txt", level=logging.INFO, format='%(asctime)s - %(message)s', datefmt="%d-%b-%y %H:%M:%S : " ) 
 
@@ -60,7 +68,7 @@ user_agent = random.choice(user_agents)
 # pass in selected user agent as an argument
 options.add_argument(f'user-agent={user_agent}')
 
-bot = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
 bot.set_window_size( 800,800 )
 
 # Step 4: Scrape using Stealth

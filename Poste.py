@@ -384,16 +384,11 @@ class Poste():
                 for caractere in commentaire:
                     if not caractere == '"':
                         sRet += caractere
-                
-                Utils.logging.info( "\t Sortie : valide \n \t, commentaire : {tkt} ".format( tkt=sRet ) )
-
                 return  sRet
             
     
 
     def estCommenter( self ) -> bool:
-
-        Utils.logging.info( "estCommenter :" )
 
         if self.__bio == None :        
             bioPoste = self.getBio().strip()
@@ -412,19 +407,13 @@ class Poste():
 
 
         if bioPoste in listeBioPoste:
-            
-            Utils.logging.info( "\t Sortie : True" )
-
             return True
         
-        Utils.logging.info( "\t Sortie : False " )
         return False    
 
 
     def commenter( self ) -> str:
-        
-        Utils.logging.info( "commenter : " )
-        
+                
         if not self.estCommenter():
             
             # récupration et click sur le button commentaire qui permet d'activer le chant de saisie 
@@ -441,19 +430,17 @@ class Poste():
                 inputComment.clear()
             
             except TimeoutException :
-                Utils.logging.info("\t Sortie : Poste non commentable")
                 return
 
             except ElementNotInteractableException :
-                Utils.logging.info ( " \n error : Input commentaire non touvais " )
                 WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CLASS_NAME, 'artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view artdeco-modal__dismiss' ))).click()
-                
-                #ember408 > div > button class="artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view artdeco-modal__dismiss"
-                
+                            
             
             # géneration du commentaire
             commentaire = self.__genereCommentaire()
+            
             #commentaire = "thanks"
+
             while True:
                 try :   
                                      
@@ -470,10 +457,15 @@ class Poste():
             # récupration et click sur le button poste ou publier qui permet selon langue de publie le commentaire           
             divButtonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#fie-impression-container > div.update-v2-social-activity' )))
             divButtonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#fie-impression-container > div.update-v2-social-activity > div.feed-shared-update-v2__comments-container.display-flex.flex-column' )))
-            buttonComment    = WebDriverWait( divButtonComment, 5).until(EC.presence_of_element_located((By.XPATH, './/button[@class="m2 artdeco-button artdeco-button--1 artdeco-button--tertiary ember-view"]' )))
+            
+            try:
+                buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="m2 artdeco-button artdeco-button--1 artdeco-button--tertiary ember-view"]' )))
+            except TimeoutException:
+                buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button mt3 artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
+
 
             try :
-                buttonComment.click()
+                buttonComment[0].click()
                 Poste.nbDejaCommenter +=1
             except ElementClickInterceptedException :
                 self.actions.move_to_element(buttonComment.find_element(By.XPATH, ".."))
@@ -508,24 +500,17 @@ class Poste():
                 
                 file.close()
             
-            Utils.logging.info( "\t Sortie : poste commenter" )
             self.estCommente = True
             return "True"     
         else:
             
-            Utils.logging.info( "\t Sortie : étant déjà commenter" )
             Poste.nbDejaCommenter += 1
             self.estCommente = False
-            
-            
             
             return "Poste déjà commenter"
 
 
-    def _addPosteInPage( self ):
-        
-        Utils.logging.info( "_addPosteInPage" )
-    
+    def _addPosteInPage( self ):    
         # Récupération est click sur le button qui permet d'ajouter des postes dans le feed   
         bouttonAddPoste = []
 
@@ -561,17 +546,9 @@ class Poste():
             self.__bot.refresh()
             Poste.nbPosteInFeed = 0
 
-            
-                
-        Utils.logging.info( "Sortie de la fonction _addPosteInPage" )
-
-
 
     
-    def getNameAuteur( self ):
-
-        Utils.logging.info( "getNameAuteur " )
-        
+    def getNameAuteur( self ):        
         try :               
         
             self.auteur =  WebDriverWait( self.__divContentLePoste, 5 ).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, '#{idPoste} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)'.format( idPoste=self.__idPoste ) ) ) ).text
@@ -582,14 +559,7 @@ class Poste():
                    self.auteur =  WebDriverWait(self.__divContentLePoste, 5).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, "#{idPoste} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)".format(idPoste=self.__idPoste ) ) ) ).text
                 
                 except TimeoutException : 
-
-                    Utils.logging.info( "\t Sortie : auteur non trouvais {idposte}".format(idposte=self.__idPoste) )
-
                     raise AuteurNonTrouvais()
         
         if self.auteur.lower() in Poste.nomCreateurAEsquiver:
-            raise AuteurNeDoitPasEtreCommenter()
-
-
-        Utils.logging.info( "\t Sortie : auteur trouvais " )
-        
+            raise AuteurNeDoitPasEtreCommenter()    
