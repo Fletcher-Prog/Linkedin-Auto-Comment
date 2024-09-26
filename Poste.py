@@ -486,13 +486,13 @@ class Poste():
             
             bioPoste += "\n"
                 
-            with open("posteDejaCommenter.txt",'a') as file :
+            with open("Saveposte/posteDejaCommenter.txt",'a') as file :
                 
                 file.write(bioPoste)
                 
                 file.close()
 
-            with open("posteEtComment.txt",'a') as file :
+            with open("Saveposte/posteEtComment.txt",'a') as file :
 
                 bioPoste = "Bio poste : " + bioPoste + "Commentaire : " + commentaire + "\n\n\n\n\n\n"
                 

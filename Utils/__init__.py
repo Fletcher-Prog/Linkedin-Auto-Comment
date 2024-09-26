@@ -28,7 +28,7 @@ if not os.path.exists(log_directory):
 
 log_file = os.path.join(log_directory, 'app.log')
 
-logging.basicConfig( filename="log.txt", level=logging.INFO, format='%(asctime)s - %(message)s', datefmt="%d-%b-%y %H:%M:%S : " ) 
+logging.basicConfig( filename="logs/log.txt", level=logging.INFO, format='%(asctime)s - %(message)s', datefmt="%d-%b-%y %H:%M:%S : " ) 
 
 
 
