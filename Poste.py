@@ -476,7 +476,11 @@ class Poste():
             try:
                 buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="m2 artdeco-button artdeco-button--1 artdeco-button--tertiary ember-view"]' )))
             except TimeoutException:
-                buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button mt3 artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
+                try:
+                    buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button mt3 artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
+                except TimeoutException:
+                    buttonComment = WebDriverWait( divButtonComment, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button--cr artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
+
         
             try :
                 buttonComment[0].click()
