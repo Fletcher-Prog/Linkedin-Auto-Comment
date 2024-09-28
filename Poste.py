@@ -61,21 +61,21 @@ class Poste():
                 if Poste.countAddPostInPage >= 3 :
                     Poste.nbPosteInFeed = 0
                     self.__bot.refresh()
-                    Utils.logging.info(" Page Refresh suite a de nombreux refus de poste " )
+                    Utils.logging.warning(" Page Refresh suite a de nombreux refus de poste " )
 
                     if randint( 0,2 ) == 1 :
                         tempAttente = randint(30,60)
-                        Utils.logging.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                        Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                         time.sleep(tempAttente)
 
-                    if randint( 0,5 ) == 4:
+                    if randint( 0,35 ) == 4:
                         tempAttente = randint(60,120)
-                        Utils.logging.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                        Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                         time.sleep(tempAttente)
                     
-                    if randint( 0,15 ) == 14 :
+                    if randint( 0,115 ) == 14 :
                         tempAttente = randint(120,240)
-                        Utils.logging.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                        Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                         time.sleep(tempAttente)
 
                 
@@ -103,13 +103,13 @@ class Poste():
                 # Verif pour ne pas commenter certain poste qui contient des mots clé prés défini dans le tableau
                 for element in Poste.tableauDeMotMotsExclus :
                     if element.lower() in self.__texte.lower()  :
-                        Utils.logging.info("\n Poste Skipé : contient des mot clé non autorisé \n " )
+                        Utils.logging.warning("\n Poste Skipé : contient des mot clé non autorisé \n " )
                         raise PosteNonValable()
                 
                 # Verif pour ne pas commenter certain auteur défini dans un tableau
                 for element in Poste.nomCreateurAEsquiver :
                     if element.lower() in self.auteur.lower()  :
-                        Utils.logging.info("\n Poste Skipé : Auteur non autorisé \n " )
+                        Utils.logging.warning("\n Poste Skipé : Auteur non autorisé \n " )
                         raise PosteNonValable()
                                         
                 # Chiffre Auto incrementé pour avoir le nombre de poste crée
@@ -121,7 +121,7 @@ class Poste():
             
             except ( PosteNonValable, TimeoutException, WebDriverException, IdNonTrouvais, AuteurNeDoitPasEtreCommenter, AuteurNonTrouvais ) :
                 
-                # Utils.logging.info("nb Poste crée : {tkt}".format( tkt=Poste.nbPosteCree ) )
+                # Utils.logging.warning("nb Poste crée : {tkt}".format( tkt=Poste.nbPosteCree ) )
                
                 Poste.nbPosteCree   += 1
                 Poste.nbPosteInFeed += 1
@@ -134,9 +134,10 @@ class Poste():
         # Commenter et liker poste
         if self.commenter() == "True" :
             self.liker()
+            Utils.logging.warning( self.toString() )
         elif Poste.nbDejaCommenter >= 5 :
             self._addPosteInPage()
-            Utils.logging.info("\n Page Refresh suite a de nombreux poste deja commenter \n " )
+            Utils.logging.warning("\n Page Refresh suite a de nombreux poste deja commenter \n " )
 
         
         # Verification que les nombres de page et de 10 donc il faut en charger d'autre
@@ -145,12 +146,12 @@ class Poste():
     
    
     def toString( self ):
-        #Utils.logging.info ( " \n Id du poste : {idPoste} \n Auteur du poste {AuteurPoste} \n Bio du poste : {BioPoste} \n Le poster et liker ? {estLiker} \n Le poster et commenter ? {estCommenter} \n ".format(AuteurPoste=self.auteur,idPoste=self.__idPoste,BioPoste=self.__bio,estLiker=self.estLiker,estCommenter=self.estCommente ) )
+        #Utils.logging.warning ( " \n Id du poste : {idPoste} \n Auteur du poste {AuteurPoste} \n Bio du poste : {BioPoste} \n Le poster et liker ? {estLiker} \n Le poster et commenter ? {estCommenter} \n ".format(AuteurPoste=self.auteur,idPoste=self.__idPoste,BioPoste=self.__bio,estLiker=self.estLiker,estCommenter=self.estCommente ) )
         return " \n Id du poste : {idPoste} \n Auteur du poste : {AuteurPoste} \n Bio du poste : {BioPoste} \n Le poster et liker ? {estLiker} \n Le poster et commenter ? {estCommenter} \n Nombre de poste commenter et liker :  {nbPosteCommenter}".format(AuteurPoste=self.auteur,idPoste=self.__idPoste,BioPoste=self.__bio[0:18],estLiker=self.estLiker,estCommenter=self.estCommente, nbPosteCommenter=Poste.nbDejaCommenter )
    
     def _setIdPoste( self ) -> str:
         
-        # Utils.logging.info( "_setIdPoste :" )
+        # Utils.logging.warning( "_setIdPoste :" )
 
         try :     
             __idPoste = self.__divContentLePoste.find_elements(By.XPATH, "//div[contains(@class, 'feed-shared-update-v2') and contains(@class, 'feed-shared-update-v2--minimal-padding') and contains(@class, 'full-height') and contains(@class, 'relative') and contains(@class, 'feed-shared-update-v2--e2e') and contains(@class, 'artdeco-card')]")[self.__numPoste].get_attribute("id")
@@ -165,7 +166,7 @@ class Poste():
                 
                 except IndexError : 
 
-                    # Utils.logging.info( "\t Sortie : id non trouvais " )
+                    # Utils.logging.warning( "\t Sortie : id non trouvais " )
 
                     raise IdNonTrouvais()
 
@@ -177,12 +178,12 @@ class Poste():
             
             if re.match( r'ember\d{1,6}$' , __idPoste ):            
                 self.__idPoste = __idPoste
-                # Utils.logging.info( "\t Sortie : id trouvais " )
+                # Utils.logging.warning( "\t Sortie : id trouvais " )
                 return "True"
             
             else:
                 __idPoste = None
-                # Utils.logging.info( "\t Sortie : id non valide " )
+                # Utils.logging.warning( "\t Sortie : id non valide " )
                 return "L'id donne n'est pas bon"   
         
         
@@ -197,12 +198,12 @@ class Poste():
     
     def getBio( self ) -> str:   
 
-        # Utils.logging.info( "getBio :" )
+        # Utils.logging.warning( "getBio :" )
 
         try:
 
             if self.__bio == None and self.__idPoste != None :
-                # Utils.logging.info( "\t Etat : cas 1  " ) 
+                # Utils.logging.warning( "\t Etat : cas 1  " ) 
                 self.__bio = WebDriverWait(self.__divContentLePoste,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#fie-impression-container > div.feed-shared-update-v2__description-wrapper.mr2"))).text
             
         
@@ -211,30 +212,30 @@ class Poste():
             try:
 
                 if self.__bio == None and self.__idPoste != None :
-                    # Utils.logging.info( "\t Etat : cas 2  " ) 
+                    # Utils.logging.warning( "\t Etat : cas 2  " ) 
                     self.__bio = WebDriverWait(self.__divContentLePoste,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#fie-impression-container > div:nth-child(1) > div:nth-child(3) > div:nth-child(2)"))).text
 
         
             except TimeoutException :
-                # Utils.logging.info( "\t Sortie : Poste non valide" )
+                # Utils.logging.warning( "\t Sortie : Poste non valide" )
                 raise PosteNonValable()
             
-        # Utils.logging.info( "\t Sortie" )
+        # Utils.logging.warning( "\t Sortie" )
         
         return self.__bio
     
     def getIntergraliteTextePoste( self ):
          
-        #  Utils.logging.info( "Entre dans la fonction getIntergraliteTextePoste " )
+        #  Utils.logging.warning( "Entre dans la fonction getIntergraliteTextePoste " )
 
          self.__texte = WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#{posteId} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)".format(posteId=self.__idPoste)))).text
 
-        #  Utils.logging.info( "Sortie de la fonction getIntergraliteTextePoste " )      
+        #  Utils.logging.warning( "Sortie de la fonction getIntergraliteTextePoste " )      
     
 
     def liker( self ) -> bool :  
         
-        # Utils.logging.info( "liker : " )
+        # Utils.logging.warning( "liker : " )
         
         cpt = 0  
         
@@ -258,7 +259,7 @@ class Poste():
                 nbButtonLikeClicker = 0           
                 for button in __divInteractionByXpath :
                     
-                    #Utils.logging.info ( button.text )
+                    #Utils.logging.warning ( button.text )
                     
                     if button.text == "Like" or button.text == "J’aime":
                         
@@ -276,11 +277,11 @@ class Poste():
                         # si il ya 3 ou plus de poste alors j'en like 2 sinon j'en like 1
                         if nbButtonLike >= 3 and nbButtonLikeClicker == 2 or nbButtonLike < 3 and nbButtonLikeClicker == 1:
                             self.estLiker = True
-                            # Utils.logging.info( "\t Sortie : cas 1 valide" )
+                            # Utils.logging.warning( "\t Sortie : cas 1 valide" )
                             return True
                                     
             except (TimeoutException or StaleElementReferenceException):
-                # Utils.logging.info ( "1: Div Interaction non Trouvais fonction liker" )
+                # Utils.logging.warning ( "1: Div Interaction non Trouvais fonction liker" )
                 
                 # Méthode par le CSS_Selector
                 try:
@@ -302,7 +303,7 @@ class Poste():
                     nbButtonLikeClicker = 0           
                     for button in __divInteraction :
                         
-                        #Utils.logging.info ( button.text )
+                        #Utils.logging.warning ( button.text )
                         
                         if button.text == "Like" or button.text == "J’aime":                            
 
@@ -321,13 +322,13 @@ class Poste():
                             if nbButtonLike >= 3 and nbButtonLikeClicker == 2 or nbButtonLike < 3 and nbButtonLikeClicker == 1:
                                 self.estLiker = True
                                 
-                                # Utils.logging.info( "\t Sortie : cas 2 valide" )
+                                # Utils.logging.warning( "\t Sortie : cas 2 valide" )
 
                                 return True
 
                 
                 except TimeoutException:
-                    # Utils.logging.info ( "2: Div Interaction non Trouvais fonction liker" )
+                    # Utils.logging.warning ( "2: Div Interaction non Trouvais fonction liker" )
                     pass
                     
             cpt+=1
@@ -337,7 +338,7 @@ class Poste():
 
         while True :
 
-            # Utils.logging.info( "__genereCommentaire" )
+            # Utils.logging.warning( "__genereCommentaire" )
 
             Utils.logging.getLogger("openai").setLevel(Utils.logging.CRITICAL)
 
@@ -349,7 +350,7 @@ class Poste():
 
             # Ciblage de l'assistant a utilise
             my_assistants = client.beta.assistants.retrieve(gptIdAssistant)
-            #Utils.logging.info(my_assistants)
+            #Utils.logging.warning(my_assistants)
             
             # Création du thread pour la conversation avec l'assistant
             thread = client.beta.threads.create()
@@ -400,7 +401,7 @@ class Poste():
                     if not caractere == '"':
                         sRet += caractere
                 
-                # Utils.logging.info( "\t Sortie : valide \n \t, commentaire : {tkt} ".format( tkt=sRet ) )
+                # Utils.logging.warning( "\t Sortie : valide \n \t, commentaire : {tkt} ".format( tkt=sRet ) )
 
                 return  sRet
             
@@ -408,7 +409,7 @@ class Poste():
 
     def estCommenter( self ) -> bool:
 
-        # Utils.logging.info( "estCommenter :" )
+        # Utils.logging.warning( "estCommenter :" )
 
         if self.__bio == None :        
             bioPoste = self.getBio().strip()
@@ -428,17 +429,17 @@ class Poste():
 
         if bioPoste in listeBioPoste:
             
-            # Utils.logging.info( "\t Sortie : True" )
+            # Utils.logging.warning( "\t Sortie : True" )
 
             return True
         
-        # Utils.logging.info( "\t Sortie : False " )
+        # Utils.logging.warning( "\t Sortie : False " )
         return False    
 
 
     def commenter( self ) -> str:
         
-        # Utils.logging.info( "commenter : " )
+        # Utils.logging.warning( "commenter : " )
         
         if not self.estCommenter():
             
@@ -456,11 +457,11 @@ class Poste():
                 inputComment.clear()
             
             except TimeoutException :
-                # Utils.logging.info("\t Sortie : Poste non commentable")
+                # Utils.logging.warning("\t Sortie : Poste non commentable")
                 return
 
             except ElementNotInteractableException :
-                # Utils.logging.info ( " \n error : Input commentaire non touvais " )
+                # Utils.logging.warning ( " \n error : Input commentaire non touvais " )
                 WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CLASS_NAME, 'artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view artdeco-modal__dismiss' ))).click()
                 
                 #ember408 > div > button class="artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view artdeco-modal__dismiss"
@@ -496,7 +497,7 @@ class Poste():
                 buttonComment[0].click()
                 Poste.nbDejaCommenter +=1
             except ElementClickInterceptedException :
-                self.actions.move_to_element(buttonComment.find_element(By.XPATH, ".."))
+                self.actions.move_to_element(buttonComment[0].find_element(By.XPATH, ".."))
                 self.actions.click()
                 self.actions.perform()
                 Poste.nbDejaCommenter +=1
@@ -528,12 +529,12 @@ class Poste():
                 
                 file.close()
             
-            # Utils.logging.info( "\t Sortie : poste commenter" )
+            # Utils.logging.warning( "\t Sortie : poste commenter" )
             self.estCommente = True
             return "True"     
         else:
             
-            # Utils.logging.info( "\t Sortie : étant déjà commenter" )
+            # Utils.logging.warning( "\t Sortie : étant déjà commenter" )
             Poste.nbDejaCommenter += 1
             self.estCommente = False
             
@@ -544,7 +545,7 @@ class Poste():
 
     def _addPosteInPage( self ):
         
-        # Utils.logging.info( "_addPosteInPage" )
+        # Utils.logging.warning( "_addPosteInPage" )
     
         # Récupération est click sur le button qui permet d'ajouter des postes dans le feed   
         bouttonAddPoste = []
@@ -583,14 +584,14 @@ class Poste():
 
             
                 
-        # Utils.logging.info( "Sortie de la fonction _addPosteInPage" )
+        # Utils.logging.warning( "Sortie de la fonction _addPosteInPage" )
 
 
 
     
     def getNameAuteur( self ):
 
-        # Utils.logging.info( "getNameAuteur " )
+        # Utils.logging.warning( "getNameAuteur " )
         
         try :               
         
@@ -603,7 +604,7 @@ class Poste():
                 
                 except TimeoutException : 
 
-                    # Utils.logging.info( "\t Sortie : auteur non trouvais {idposte}".format(idposte=self.__idPoste) )
+                    # Utils.logging.warning( "\t Sortie : auteur non trouvais {idposte}".format(idposte=self.__idPoste) )
 
                     raise AuteurNonTrouvais()
         
