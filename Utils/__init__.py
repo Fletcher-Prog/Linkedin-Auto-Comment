@@ -21,15 +21,33 @@ from selenium.webdriver.chrome.options import Options
 import logging
 import os
 
-# Créer un répertoire pour les logs s'il n'existe pas
-log_directory = 'logs'
+# Créez le répertoire de logs s'il n'existe pas
+log_directory = "logs"
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
-log_file = os.path.join(log_directory, 'app.log')
+# Création de deux loggers distincts
+logApp = logging.getLogger('logApp')
+logFonction = logging.getLogger('logFonction')
 
-logging.basicConfig( filename="logs/log.txt", level=logging.WARNING, format='%(asctime)s - %(message)s', datefmt="%d-%b-%y %H:%M:%S : " ) 
+# Définir le niveau de log des deux loggers à INFO
+logApp.setLevel(logging.INFO)
+logFonction.setLevel(logging.INFO)
 
+# Création des handlers pour écrire dans deux fichiers différents
+handler1 = logging.FileHandler('log_file1.log')
+handler2 = logging.FileHandler('log_file2.log')
+
+# Création d'un format pour les logs
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# Assigner le format aux handlers
+handler1.setFormatter(formatter)
+handler2.setFormatter(formatter)
+
+# Ajouter les handlers aux loggers
+logApp.addHandler(handler1)
+logFonction.addHandler(handler2)
 
 
 
@@ -95,7 +113,7 @@ try:
     logging.info( "xsel est bien installer" )
 
 except pyperclip.PyperclipException :
-    print ( "You need to install xsel use this command : sudo apt-get install xsel " )
+    print ( "You need to install xsel use this command : sudo apt-get install xsel && sudo apt-get install xclip " )
     logging.info ( "You need to install xsel use this command : sudo apt-get install xsel " )
     raise SystemExit
 

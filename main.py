@@ -5,7 +5,7 @@ from random import randint
 from datetime import datetime
 import env
 
-lancer = False
+lancer = True
 nbPosteInteractionAujourdhui = 250
 
 
@@ -73,7 +73,7 @@ while True :
             if randint( 0,15 ) == 14 :
                 tempAttente = randint(120,240)
                 Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
-                time.sleep(tempAttente)            
+                time.sleep(tempAttente)
             
             i += 1  
 
