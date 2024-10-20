@@ -5,7 +5,7 @@ from random import randint
 from datetime import datetime
 import env
 
-lancer = True
+lancer = False
 nbPosteInteractionAujourdhui = 250
 
 

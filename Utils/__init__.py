@@ -35,8 +35,8 @@ logApp.setLevel(logging.INFO)
 logFonction.setLevel(logging.INFO)
 
 # Création des handlers pour écrire dans deux fichiers différents
-handler1 = logging.FileHandler('log_file1.log')
-handler2 = logging.FileHandler('log_file2.log')
+handler1 = logging.FileHandler('logs/time.log')
+handler2 = logging.FileHandler('logs/app.log')
 
 # Création d'un format pour les logs
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
