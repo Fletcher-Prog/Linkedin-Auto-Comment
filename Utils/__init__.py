@@ -93,6 +93,7 @@ user_agent = random.choice(user_agents)
 # pass in selected user agent as an argument
 options.add_argument(f'user-agent={user_agent}')
 options.add_argument("--disable-gpu")
+options.add_argument("--headless")
 
 
 bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
