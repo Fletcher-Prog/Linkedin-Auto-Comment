@@ -35,7 +35,7 @@ class Poste():
     nomCreateurAEsquiver   : str = ["nathalie scott","Linkedin"]
 
     # Définition et assignation d'un valeur au attribut d'instance
-    def __init__( self, bot:WebDriver ) -> None:   
+    def __init__( self, bot:WebDriver ) -> None:
         
         self.__idPoste   :str        = None
         self.__bio       :str        = None
@@ -47,16 +47,15 @@ class Poste():
         self.__numPoste  :int        = Poste.nbPosteInFeed
         self.__bot       :WebDriver  = bot
         self.actions                 = ActionChains(self.__bot)
-       
 
 
         
         # Gestion en cas d'erreure que sa soit sur la divContentLePoste, l'idBlockInteration ou la récuperation de la bio échou 
         # cela veut dire que le poste n'est pas un poste valide
         # 
-        while True :            
+        while True :
 
-            try:  
+            try:
                 # Si 3 fois d'affiler le poste n'est pas trouvais je refrachit le page et je remet a 0 le compteur qui permet de chercher le poste
                 if Poste.countAddPostInPage >= 3 :
                     Poste.nbPosteInFeed = 0
@@ -122,11 +121,9 @@ class Poste():
             except ( PosteNonValable, WebDriverException, IdNonTrouvais, AuteurNeDoitPasEtreCommenter, AuteurNonTrouvais ) :
                 
                 # Utils.logApp.info("nb Poste crée : {tkt}".format( tkt=Poste.nbPosteCree ) )
-               
                 Poste.nbPosteCree   += 1
                 Poste.nbPosteInFeed += 1
                 Poste.countAddPostInPage += 1
-                       
                 self.__numPoste = Poste.nbPosteInFeed
                 self._addPosteInPage()
 
@@ -142,31 +139,30 @@ class Poste():
         
         # Verification que les nombres de page et de 10 donc il faut en charger d'autre
         if Poste.nbPosteCree % 6 == 0:
-           self._addPosteInPage()
+            self._addPosteInPage()
     
-   
     def toString( self ):
         
         Utils.logFonction.info ( " \n Id du poste : {idPoste} \n Auteur du poste {AuteurPoste} \n Bio du poste : {BioPoste} \n Le poster et liker ? {estLiker} \n Le poster et commenter ? {estCommenter} \n ".format(AuteurPoste=self.auteur,idPoste=self.__idPoste,BioPoste=self.__bio,estLiker=self.estLiker,estCommenter=self.estCommente ) )
         
         return " \n Id du poste : {idPoste} \n Auteur du poste : {AuteurPoste} \n Bio du poste : {BioPoste} \n Le poster et liker ? {estLiker} \n Le poster et commenter ? {estCommenter} \n Nombre de poste commenter et liker :  {nbPosteCommenter}".format(AuteurPoste=self.auteur,idPoste=self.__idPoste,BioPoste=self.__bio[0:18],estLiker=self.estLiker,estCommenter=self.estCommente, nbPosteCommenter=Poste.nbDejaCommenter )
-   
+
     def _setIdPoste( self ) -> str:
         
         Utils.logFonction.info( "_setIdPoste :" )
 
-        try :     
+        try :
             __idPoste = self.__divContentLePoste.find_elements(By.XPATH, "//div[contains(@class, 'feed-shared-update-v2') and contains(@class, 'feed-shared-update-v2--minimal-padding') and contains(@class, 'full-height') and contains(@class, 'relative') and contains(@class, 'feed-shared-update-v2--e2e') and contains(@class, 'artdeco-card')]")[self.__numPoste].get_attribute("id")
             self.__bot .execute_script("arguments[0].scrollIntoView(true);", self.__divContentLePoste.find_elements(By.XPATH, "//div[contains(@class, 'feed-shared-update-v2') and contains(@class, 'feed-shared-update-v2--minimal-padding') and contains(@class, 'full-height') and contains(@class, 'relative') and contains(@class, 'feed-shared-update-v2--e2e') and contains(@class, 'artdeco-card')]")[self.__numPoste] )
 
-        except IndexError : 
+        except IndexError :
                 
-                try : 
+                try :
 
                     __idPoste = self.__divContentLePoste.find_elements(By.XPATH, "//div[contains(@class, 'feed-shared-update-v2') and contains(@class, 'feed-shared-update-v2--minimal-padding') and contains(@class, 'full-height') and contains(@class, 'relative') and contains(@class, 'artdeco-card')]")[self.__numPoste].get_attribute("id")
                     self.__bot .execute_script("arguments[0].scrollIntoView(true);", self.__divContentLePoste.find_elements(By.XPATH, "//div[contains(@class, 'feed-shared-update-v2') and contains(@class, 'feed-shared-update-v2--minimal-padding') and contains(@class, 'full-height') and contains(@class, 'relative') and contains(@class, 'artdeco-card')]")[self.__numPoste])
                 
-                except IndexError : 
+                except IndexError :
 
                     Utils.logFonction.info( "\t Sortie : id non trouvais " )
 
@@ -178,7 +174,7 @@ class Poste():
         # qu'il correspond a ember suivit de 1 a 6 chiffre
         if __idPoste != None :
             
-            if re.match( r'ember\d{1,6}$' , __idPoste ):            
+            if re.match( r'ember\d{1,6}$' , __idPoste ):
                 self.__idPoste = __idPoste
                 Utils.logFonction.info( "\t Sortie : id trouvais " )
                 return "True"
@@ -186,10 +182,10 @@ class Poste():
             else:
                 __idPoste = None
                 Utils.logFonction.info( "\t Sortie : id non valide " )
-                return "L'id donne n'est pas bon"   
+                return "L'id donne n'est pas bon"
         
         
-    def getIdPoste( self ) -> str:        
+    def getIdPoste( self ) -> str:
         if self.__idPoste != None:
             return self.__idPoste
         
@@ -198,7 +194,7 @@ class Poste():
     
 
     
-    def getBio( self ) -> str:   
+    def getBio( self ) -> str:
 
         Utils.logFonction.info( "getBio :" )
 
@@ -206,7 +202,7 @@ class Poste():
 
             if self.__bio == None and self.__idPoste != None :
                 
-                Utils.logFonction.info( "\t Etat : cas 1  " ) 
+                Utils.logFonction.info( "\t Etat : cas 1  " )
                 
                 self.__bio = WebDriverWait(self.__divContentLePoste,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#fie-impression-container > div.feed-shared-update-v2__description-wrapper.mr2"))).text
             
@@ -216,7 +212,7 @@ class Poste():
             try:
 
                 if self.__bio == None and self.__idPoste != None :
-                    Utils.logFonction.info( "\t Etat : cas 2  " ) 
+                    Utils.logFonction.info( "\t Etat : cas 2  " )
                     self.__bio = WebDriverWait(self.__divContentLePoste,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#fie-impression-container > div:nth-child(1) > div:nth-child(3) > div:nth-child(2)"))).text
                     
             except TimeoutException :
@@ -224,7 +220,7 @@ class Poste():
 
                     if self.__bio == None and self.__idPoste != None :
                         
-                        Utils.logFonction.info( "\t Etat : cas 3 " ) 
+                        Utils.logFonction.info( "\t Etat : cas 3 " )
                         
                         self.__bio = WebDriverWait(self.__divContentLePoste,5).until(EC.presence_of_element_located((By.CLASS_NAME, "feed-shared-update-v2__description-wrapper"))).text                   
                 
@@ -237,17 +233,17 @@ class Poste():
         return self.__bio
     
     def getIntergraliteTextePoste( self ):
-         
+
         Utils.logFonction.info( "Entre dans la fonction getIntergraliteTextePoste " )
 
         if self.__texte == None :
 
-            try:                   
+            try:
                 Utils.logFonction.info( "\t Etat : cas 1 {idposte}".format(idposte=self.__idPoste)  )  
                 self.__texte = WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#{posteId} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)".format(posteId=self.__idPoste)))).text            
         
             except TimeoutException :
-                    try:                       
+                    try:
                         Utils.logFonction.info( "\t Etat : cas 2 {idposte}".format(idposte=self.__idPoste)  ) 
                             
                         self.__texte = WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#{posteId} > div > div > div.fie-impression-container > div.feed-shared-update-v2__description-wrapper > div.feed-shared-inline-show-more-text.feed-shared-update-v2__description.feed-shared-inline-show-more-text--minimal-padding.feed-shared-inline-show-more-text--3-lines > div > span > span".format(posteId=self.__idPoste)))).text            
@@ -258,33 +254,33 @@ class Poste():
         else:
             return self.__texte
 
-        Utils.logFonction.info( "Sortie " )      
+        Utils.logFonction.info( "Sortie " )
     
 
-    def liker( self ) -> bool :  
+    def liker( self ) -> bool :
         
         Utils.logFonction.info( "liker : " )
         
-        cpt = 0  
+        cpt = 0
         
         while cpt < 10 :
             # Méthode par le XPATH
             try:
                 # Récuperation de la div interaction de chaque poste en fonction de sa position dans la héarchie du fiche
                 __divInteractionByXpath = WebDriverWait(self.__divContentLePoste ,6).until(EC.presence_of_element_located((By.XPATH,"//*[@id='{idPoste}']/div[{numDeDiv}]".format(idPoste=self.__idPoste,numDeDiv=cpt))))
-               
-               # Récupération de tout les buttons de la div interaction 
+
+                # Récupération de tout les buttons de la div interaction 
                 __divInteractionByXpath = __divInteractionByXpath.find_elements(By.XPATH,".//button")
                 # Si aucun boutton like trouvais alors modifier le chemein menant a la div interaction et re essayer
                 # Les 2 boucle for permet juste de s'assure que tout les bouttons qui on le lable like son clicker
 
-                nbButtonLike = 0 
+                nbButtonLike = 0
                 for button in __divInteractionByXpath :
                     if button.text == "Like" or button.text == "J’aime":
                         nbButtonLike +=1
                 
 
-                nbButtonLikeClicker = 0           
+                nbButtonLikeClicker = 0
                 for button in __divInteractionByXpath :
                     
                     Utils.logFonction.info ( button.text )
@@ -313,27 +309,27 @@ class Poste():
                 
                 # Méthode par le CSS_Selector
                 try:
-                    # Récuperation de la div interaction de chaque poste en fonction de sa position dans la héarchie du fiche    
+                    # Récuperation de la div interaction de chaque poste en fonction de sa position dans la héarchie du fiche
                     __divInteraction = WebDriverWait(self.__divContentLePoste ,5).until(EC.presence_of_element_located((By.CSS_SELECTOR,"#{idPoste} > div > div.update-v2-social-activity".format(idPoste=self.__idPoste))))
                 
-                    # Récupération de tout les buttons de la div interaction 
+                    # Récupération de tout les buttons de la div interaction
                     __divInteraction = __divInteraction.find_elements(By.XPATH,".//button")
                     
                     # Si aucun boutton like trouvais alors modifier le chemein menant a la div interaction et re essayer
                     # Les 2 boucle for permet juste de s'assure que tout les bouttons qui on le lable like son clicker
 
-                    nbButtonLike = 0 
+                    nbButtonLike = 0
                     for button in __divInteraction :
                         if button.text == "Like" or button.text == "J’aime":
                             nbButtonLike +=1
 
 
-                    nbButtonLikeClicker = 0           
+                    nbButtonLikeClicker = 0
                     for button in __divInteraction :
                         
                         Utils.logFonction.info ( button.text )
                         
-                        if button.text == "Like" or button.text == "J’aime":                            
+                        if button.text == "Like" or button.text == "J’aime":
 
                             # Déplacer le curseur de la souris sur l'élément
                             self.actions.move_to_element(button)
@@ -439,7 +435,7 @@ class Poste():
 
         Utils.logFonction.info( "estCommenter :" )
 
-        if self.__bio == None :        
+        if self.__bio == None :
             bioPoste = self.getBio().strip()
         else:
             bioPoste = self.__bio.strip()
@@ -462,7 +458,7 @@ class Poste():
             return True
         
         Utils.logFonction.info( "\t Sortie : False " )
-        return False    
+        return False
 
 
     def commenter( self ) -> str:
@@ -474,7 +470,6 @@ class Poste():
             # récupration et click sur le button commentaire qui permet d'activer le chant de saisie 
             buttonComment =  self.__divContentLePoste.find_element(By.CSS_SELECTOR, 'button.artdeco-button.comment-button')
             element = self.__bot.find_element(By.ID,"{idButton}".format(idButton=buttonComment.get_attribute("id")))
-           
             self.__bot.execute_script("arguments[0].click();", element)
 
             # Saisie du commentaire
@@ -497,52 +492,51 @@ class Poste():
             commentaire = self.__genereCommentaire()
 
             while True:
-                try :   
-                                     
+                try :
                     pyperclip.copy( commentaire )
 
                     inputComment.send_keys(Keys.CONTROL + "v")
-                    break         
+                    break
 
                 except WebDriverException as e :
                     commentaire = self.__genereCommentaire()
                     print ( "Erreure copier coller " )
 
-            # récupration et click sur le button poste ou publier qui permet selon langue de publie le commentaire           
+            # récupration et click sur le button poste ou publier qui permet selon langue de publie le commentaire
             
             try:
-                Utils.logFonction.info( "\t Etat : cas 1 " ) 
+                Utils.logFonction.info( "\t Etat : cas 1 " )
                 buttonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="m2 artdeco-button artdeco-button--1 artdeco-button--tertiary ember-view"]' )))
             except TimeoutException:
                 try:
-                    Utils.logFonction.info( "\t Etat : cas 2 " ) 
+                    Utils.logFonction.info( "\t Etat : cas 2 " )
                     buttonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button mt3 artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
                 except TimeoutException:
-                    Utils.logFonction.info( "\t Etat : cas 3 " ) 
+                    Utils.logFonction.info( "\t Etat : cas 3 " )
                     buttonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button--cr artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
-         
+
             try :
                 buttonComment[0].click()
                 Poste.nbDejaCommenter +=1
-                Utils.logFonction.info( "Sortie \n" ) 
-                return 
+                Utils.logFonction.info( "Sortie \n" )
+                return
             except ElementClickInterceptedException :
                 self.actions.move_to_element(buttonComment[0].find_element(By.XPATH, ".."))
                 self.actions.click()
                 self.actions.perform()
                 Poste.nbDejaCommenter +=1
-                Utils.logFonction.info( "Sortie 2 \n" ) 
+                Utils.logFonction.info( "Sortie 2 \n" )
 
                 
             
-            # Ajoute de la bio au fiche pour ne pas re commenter le poste 
+            # Ajoute de la bio au fiche pour ne pas re commenter le poste
             # Traitement des espaces et autres caractére spéciaux est ajouts du délimitateur
 
-            if self.__bio == None :        
+            if self.__bio == None :
                 bioPoste = self.getBio().strip()
             else:
                 bioPoste = self.__bio.strip()
-                            
+
             bioPoste = re.sub(r'\s+', ' ', bioPoste)
             
             bioPoste += "\n"
@@ -563,7 +557,7 @@ class Poste():
             
             Utils.logFonction.info( "\t Sortie : poste commenter" )
             self.estCommente = True
-            return "True"     
+            return "True"
         else:
             
             Utils.logFonction.info( "\t Sortie : étant déjà commenter" )
@@ -579,10 +573,10 @@ class Poste():
         
         Utils.logFonction.info( "_addPosteInPage" )
     
-        # Récupération est click sur le button qui permet d'ajouter des postes dans le feed   
+        # Récupération est click sur le button qui permet d'ajouter des postes dans le feed
         bouttonAddPoste = []
 
-        try :    
+        try :
             bouttonAddPoste = self.__bot.find_elements( By.XPATH,'//button[@class="artdeco-button artdeco-button--secondary mv5 t-14 t-black t-normal"][@type="button"]')
         
             if len( bouttonAddPoste ) > 0 :
@@ -625,19 +619,19 @@ class Poste():
 
         Utils.logFonction.info( "getNameAuteur " )
         
-        try :               
+        try :
         
             Utils.logFonction.info( "\t Etat : cas 1 {idposte}".format(idposte=self.__idPoste)  ) 
             self.auteur =  WebDriverWait( self.__divContentLePoste, 5 ).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, '#{idPoste} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)'.format( idPoste=self.__idPoste ) ) ) ).text
         
-        except TimeoutException : 
-                try : 
+        except TimeoutException :
+                try :
                 
-                  Utils.logFonction.info( "\t Etat : cas 2 {idposte}".format(idposte=self.__idPoste)  ) 
-                  self.auteur =  WebDriverWait(self.__divContentLePoste, 5).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, "#{idPoste} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)".format(idPoste=self.__idPoste ) ) ) ).text
+                    Utils.logFonction.info( "\t Etat : cas 2 {idposte}".format(idposte=self.__idPoste)  ) 
+                    self.auteur =  WebDriverWait(self.__divContentLePoste, 5).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, "#{idPoste} > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)".format(idPoste=self.__idPoste ) ) ) ).text
 
                 except TimeoutException :
-                    try : 
+                    try :
                 
                         Utils.logFonction.info( "\t Etat : cas 3 {idposte}".format(idposte=self.__idPoste)  ) 
                         self.auteur =  WebDriverWait(self.__divContentLePoste, 5).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, "#{idPoste} > div > div > div.fie-impression-container > div.relative > div.update-components-actor.display-flex > div > div > a.app-aware-link.update-components-actor__meta-link > span.update-components-actor__title > span.update-components-actor__name.hoverable-link-text.t-14.t-bold.t-black > span > span:nth-child(1)".format(idPoste=self.__idPoste ) ) ) ).text
@@ -647,7 +641,6 @@ class Poste():
                 
                             Utils.logFonction.info( "\t Etat : cas 4 {idposte}".format(idposte=self.__idPoste)  ) 
                             self.auteur =  WebDriverWait(self.__bot, 5).until( EC.presence_of_element_located( ( By.CSS_SELECTOR, "#{idPoste} > div > div > div.fie-impression-container > div.relative > div.update-components-actor.display-flex > div > div > a.app-aware-link.update-components-actor__meta-link > span.update-components-actor__title > span.update-components-actor__name.hoverable-link-text.t-14.t-bold.t-black > span > span:nth-child(1)".format(idPoste=self.__idPoste ) ) ) ).text
-                                                                                                                                                  #ember179 > div > div > div.fie-impression-container > div.relative > div.update-components-actor.display-flex > div > div > a.app-aware-link.update-components-actor__meta-link > span.update-components-actor__title > span.update-components-actor__name.hoverable-link-text.t-14.t-bold.t-black > span > span:nth-child(1)
 
                         except TimeoutException : 
                             try :                 
@@ -666,4 +659,4 @@ class Poste():
 
 
         if self.auteur.lower() in Poste.nomCreateurAEsquiver:
-            raise AuteurNeDoitPasEtreCommenter()        
+            raise AuteurNeDoitPasEtreCommenter()

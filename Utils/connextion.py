@@ -15,7 +15,7 @@ def connextion(email,mdp,timeSleep=25):
     bot = Utils.bot
 
     # Aller à la page de connexion LinkedIn
-    bot.get('https://www.linkedin.com/login')    
+    bot.get('https://www.linkedin.com/login')
     
     # Trouver et remplir le champ du nom d'utilisateur/email
     email_field = bot.find_element("id", "username")

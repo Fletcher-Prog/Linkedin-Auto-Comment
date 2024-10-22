@@ -20,9 +20,16 @@ from selenium.webdriver.chrome.options import Options
 # Systeme de logging
 import logging
 import os
+import sys
 
 # Créez le répertoire de logs s'il n'existe pas
 log_directory = "logs"
+
+if getattr(sys, 'frozen', False):
+    log_directory = os.path.join(sys._MEIPASS, 'logs')
+else:
+    log_directory = os.path.join(os.getcwd(), 'logs')
+
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
@@ -85,6 +92,8 @@ user_agent = random.choice(user_agents)
 
 # pass in selected user agent as an argument
 options.add_argument(f'user-agent={user_agent}')
+options.add_argument("--disable-gpu")
+
 
 bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
 bot.set_window_size( 800,800 )

@@ -1,11 +1,11 @@
 import Utils
 import time
-from Poste import Poste 
+from Poste import Poste
 from random import randint
 from datetime import datetime
 import env
 
-lancer = False
+lancer = True
 nbPosteInteractionAujourdhui = 250
 
 
