@@ -40,4 +40,4 @@ def connextion(email,mdp,timeSleep=25):
     # Soumettre le formulaire
     password_field.send_keys(Keys.RETURN)
     
-    time.sleep(timeSleep)
+    Utils.checkCode2Fa()

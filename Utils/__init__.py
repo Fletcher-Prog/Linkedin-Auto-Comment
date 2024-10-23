@@ -1,6 +1,8 @@
-from .connextion import *
-from .Exception import *
-from .saveCookie import *
+from .connextion   import *
+from .Exception    import *
+from .checkCode2Fa import *
+
+
 
 import pyperclip
 
@@ -60,8 +62,9 @@ logFonction.addHandler(handler2)
 
 options = Options()
 options.add_argument("--log-level=3")
-options.add_experimental_option("excludeSwitches", ["enable-automation"])
-options.add_experimental_option('useAutomationExtension', False)
+#options.add_experimental_option("excludeSwitches", ["enable-automation"])
+#options.add_experimental_option('useAutomationExtension', False)
+
 # disable the AutomationControlled feature of Blink rendering engine
 options.add_argument('--disable-blink-features=AutomationControlled')
 # disable pop-up blocking
@@ -74,6 +77,10 @@ options.add_argument('--disable-extensions')
 options.add_argument('--no-sandbox')
 # disable shared memory usage
 options.add_argument('--disable-dev-shm-usage')
+
+# pass in selected user agent as an argument
+options.add_argument("--disable-gpu")
+#options.add_argument("--headless")
 
 # Step 3: Rotate user agents 
 user_agents = [
@@ -90,17 +97,14 @@ user_agents = [
 # select random user agent
 user_agent = random.choice(user_agents)
 
-# pass in selected user agent as an argument
 options.add_argument(f'user-agent={user_agent}')
-options.add_argument("--disable-gpu")
-options.add_argument("--headless")
-
 
 bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
 bot.set_window_size( 800,800 )
 
 # Step 4: Scrape using Stealth
 #enable stealth mode
+
 stealth(bot,
         languages=["en-US", "en"],
         vendor="Google Inc.",
@@ -109,7 +113,6 @@ stealth(bot,
         renderer="Intel Iris OpenGL Engine",
         fix_hairline=True,
         )
-
 
 # Change the property value of the navigator for webdriver to undefined
 bot.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
