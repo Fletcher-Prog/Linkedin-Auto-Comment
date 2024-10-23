@@ -80,7 +80,8 @@ options.add_argument('--disable-dev-shm-usage')
 
 # pass in selected user agent as an argument
 options.add_argument("--disable-gpu")
-#options.add_argument("--headless")
+
+options.add_argument("--headless")
 
 # Step 3: Rotate user agents 
 user_agents = [
