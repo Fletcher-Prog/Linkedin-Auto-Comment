@@ -4,7 +4,6 @@ from .checkCode2Fa import *
 
 
 
-import pyperclip
 
 
 # Selenuim
@@ -17,6 +16,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
+from pyvirtualdisplay import Display
+
+import pyperclip
+
+# Étape 1: Démarrer un affichage virtuel avec Xvfb
+display = Display(visible=0, size=(1920, 1080))  # invisible=0 rend l'écran non visible
+display.start()
 
 
 # Systeme de logging
