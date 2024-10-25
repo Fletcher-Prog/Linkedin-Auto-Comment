@@ -488,22 +488,14 @@ class Poste():
                 WebDriverWait(self.__bot,5).until(EC.presence_of_element_located((By.CLASS_NAME, 'artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view artdeco-modal__dismiss' ))).click()
                 
             
-            # géneration du commentaire
+            # géneration du commentaire et placement dans le champs de saisie
             commentaire = self.__genereCommentaire()
 
-            while True:
-                try :
-                    pyperclip.copy( commentaire )
-
-                    inputComment.send_keys(Keys.CONTROL + "v")
-                    break
-
-                except WebDriverException as e :
-                    commentaire = self.__genereCommentaire()
-                    print ( "Erreure copier coller " )
+            comment_box = self.__divContentLePoste.find_element(By.CSS_SELECTOR, "div[contenteditable='true']")
+            script = f"arguments[0].innerHTML = '{commentaire}'"
+            self.__bot.execute_script(script, comment_box)
 
             # récupration et click sur le button poste ou publier qui permet selon langue de publie le commentaire
-            
             try:
                 Utils.logFonction.info( "\t Etat : cas 1 " )
                 buttonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="m2 artdeco-button artdeco-button--1 artdeco-button--tertiary ember-view"]' )))
@@ -567,6 +559,20 @@ class Poste():
             
             
             return "Poste déjà commenter"
+        
+    def get_xpath(element):
+        # Récupérer l'ID de l'élément
+        id_attr = element.get_attribute('id')
+        if id_attr:
+            return f"//*[@id='{id_attr}']"
+
+        # Récupérer la classe de l'élément
+        class_attr = element.get_attribute('class')
+        if class_attr:
+            return f"//{element.tag_name}[@class='{class_attr}']"
+
+        # Retourner le tag par défaut si aucun attribut unique n'est trouvé
+        return f"//{element.tag_name}"
 
 
     def _addPosteInPage( self ):
@@ -599,8 +605,7 @@ class Poste():
             #print ( bouttonAddPoste )
 
             if len( bouttonAddPoste ) > 0 :
-
-                bouttonAddPoste[0].click()
+                self.__bot.execute_script("arguments[0].click();", bouttonAddPoste[0])
                 time.sleep(5)
                 return "ok"
         

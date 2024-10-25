@@ -13,15 +13,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
 
 from pyvirtualdisplay import Display
 
 import pyperclip
 
 # Étape 1: Démarrer un affichage virtuel avec Xvfb
-display = Display(visible=0, size=(1920, 1080))  # invisible=0 rend l'écran non visible
+display = Display(visible=1, size=(1920, 1080))  # invisible=0 rend l'écran non visible
 display.start()
 
 
@@ -66,8 +68,10 @@ logFonction.addHandler(handler2)
 
 
 
-options = Options()
+#options = Options()
+options = webdriver.FirefoxOptions()
 options.add_argument("--log-level=3")
+
 #options.add_experimental_option("excludeSwitches", ["enable-automation"])
 #options.add_experimental_option('useAutomationExtension', False)
 
@@ -87,7 +91,7 @@ options.add_argument('--disable-dev-shm-usage')
 # pass in selected user agent as an argument
 options.add_argument("--disable-gpu")
 
-options.add_argument("--headless")
+#options.add_argument("--headless")
 
 # Step 3: Rotate user agents 
 user_agents = [
@@ -102,24 +106,23 @@ user_agents = [
 ]
 
 # select random user agent
-user_agent = random.choice(user_agents)
+# user_agent = random.choice(user_agents)
+# options.add_argument(f'user-agent={user_agent}')
 
-options.add_argument(f'user-agent={user_agent}')
-
-bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
+# bot = webdriver.Chrome(service=Service( ChromeDriverManager().install() ), options=options)
+bot = webdriver.Firefox( service=Service( GeckoDriverManager().install() ), options=options )
 bot.set_window_size( 800,800 )
 
 # Step 4: Scrape using Stealth
 #enable stealth mode
-
-stealth(bot,
-        languages=["en-US", "en"],
-        vendor="Google Inc.",
-        platform="Win32",
-        webgl_vendor="Intel Inc.",
-        renderer="Intel Iris OpenGL Engine",
-        fix_hairline=True,
-        )
+# stealth(bot,
+#         languages=["en-US", "en"],
+#         vendor="Google Inc.",
+#         platform="Win32",
+#         webgl_vendor="Intel Inc.",
+#         renderer="Intel Iris OpenGL Engine",
+#         fix_hairline=True,
+#         )
 
 # Change the property value of the navigator for webdriver to undefined
 bot.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
