@@ -23,7 +23,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException, ElementNotInteractableException, ElementClickInterceptedException
+from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException, ElementNotInteractableException, ElementClickInterceptedException,JavascriptException
 
 class Poste(): 
     
@@ -86,6 +86,26 @@ class Poste():
                 # Verification que les interaction  (liker,reposter,send) son dispo si non on ne charge pas d'instance pour ce poste   
                 self.__divContentLePoste.find_element( By.XPATH,".//*[ contains(@class, 'update-v2-social-activity')]" ).get_attribute('id')
 
+                # Vérification que le code et commentable
+                try:
+                    # Etape 1 : récupration et click sur le button commentaire qui permet d'activer le chant de saisie 
+                    buttonComment =  self.__divContentLePoste.find_element(By.CSS_SELECTOR, 'button.artdeco-button.comment-button')
+                    element = self.__bot.find_element(By.ID,"{idButton}".format(idButton=buttonComment.get_attribute("id")))
+                    self.__bot.execute_script("arguments[0].click();", element)
+
+                    time.sleep( 1 )
+
+                    # Etape 2 : Verifier si l'input commentaire et accesible et utilisable
+                    commentBox = self.__divContentLePoste.find_elements(By.CSS_SELECTOR, "div[contenteditable='true']")
+                    script = "arguments[0].innerHTML = ''"
+                    print ( commentBox )
+                    self.__bot.execute_script(script, commentBox[0] )
+
+                    print ( "Poste commentable" )
+                
+                except ( JavascriptException, IndexError ) :
+                    raise PosteNonValable()
+            
                 # Assignation de l'id du poste
                 self._setIdPoste()
                 
@@ -118,7 +138,7 @@ class Poste():
                 
                 break
             
-            except ( PosteNonValable, WebDriverException, IdNonTrouvais, AuteurNeDoitPasEtreCommenter, AuteurNonTrouvais ) :
+            except ( PosteNonValable, IdNonTrouvais, AuteurNeDoitPasEtreCommenter, AuteurNonTrouvais ) :
                 
                 # Utils.logApp.info("nb Poste crée : {tkt}".format( tkt=Poste.nbPosteCree ) )
                 Poste.nbPosteCree   += 1
@@ -287,15 +307,8 @@ class Poste():
                     
                     if button.text == "Like" or button.text == "J’aime":
                         
-                        # Déplacer le curseur de la souris sur l'élément
-                        self.actions.move_to_element(button)
-
-                        # Cliquer sur l'élément
-                        self.actions.click()
-
-                        # Exécuter les actions
-                        self.actions.perform()
-
+                        button.click()
+                        
                         nbButtonLikeClicker +=1
                         
                         # si il ya 3 ou plus de poste alors j'en like 2 sinon j'en like 1
@@ -490,10 +503,10 @@ class Poste():
             
             # géneration du commentaire et placement dans le champs de saisie
             commentaire = self.__genereCommentaire()
-
-            comment_box = self.__divContentLePoste.find_element(By.CSS_SELECTOR, "div[contenteditable='true']")
-            script = f"arguments[0].innerHTML = '{commentaire}'"
-            self.__bot.execute_script(script, comment_box)
+            commentBox = self.__divContentLePoste.find_elements(By.CSS_SELECTOR, "div[contenteditable='true']")
+            commentaire_escaped = commentaire.replace('"', '\\"').replace("'", "\\'")
+            script = f'arguments[0].innerHTML = "{commentaire_escaped}"'
+            self.__bot.execute_script( script, commentBox[0] )
 
             # récupration et click sur le button poste ou publier qui permet selon langue de publie le commentaire
             try:
@@ -507,17 +520,18 @@ class Poste():
                     Utils.logFonction.info( "\t Etat : cas 3 " )
                     buttonComment = WebDriverWait( self.__divContentLePoste, 5).until(EC.presence_of_all_elements_located((By.XPATH, './/button[@class="comments-comment-box__submit-button--cr artdeco-button artdeco-button--1 artdeco-button--primary ember-view"]' )))
 
-            try :
-                buttonComment[0].click()
-                Poste.nbDejaCommenter +=1
-                Utils.logFonction.info( "Sortie \n" )
-                return
-            except ElementClickInterceptedException :
-                self.actions.move_to_element(buttonComment[0].find_element(By.XPATH, ".."))
-                self.actions.click()
-                self.actions.perform()
-                Poste.nbDejaCommenter +=1
-                Utils.logFonction.info( "Sortie 2 \n" )
+            for buttonCommentClikable in buttonComment:
+                try :
+                    buttonCommentClikable.click()
+                    Poste.nbDejaCommenter +=1
+                    Utils.logFonction.info( "Sortie \n" )
+                    return
+                except ElementClickInterceptedException :
+                    self.actions.move_to_element( buttonCommentClikable.find_element( By.XPATH, ".." ) )
+                    self.actions.click( )
+                    self.actions.perform( )
+                    Poste.nbDejaCommenter +=1
+                    Utils.logFonction.info( "Sortie 2 \n" )
 
                 
             
@@ -555,8 +569,6 @@ class Poste():
             Utils.logFonction.info( "\t Sortie : étant déjà commenter" )
             Poste.nbDejaCommenter += 1
             self.estCommente = False
-            
-            
             
             return "Poste déjà commenter"
         

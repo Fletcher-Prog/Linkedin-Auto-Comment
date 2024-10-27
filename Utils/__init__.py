@@ -23,7 +23,7 @@ from pyvirtualdisplay import Display
 import pyperclip
 
 # Étape 1: Démarrer un affichage virtuel avec Xvfb
-display = Display(visible=0, size=(1920, 1080))  # invisible=0 rend l'écran non visible
+display = Display(visible=1, size=(1920, 1080))  # invisible=0 rend l'écran non visible
 display.start()
 
 
