@@ -98,10 +98,12 @@ class Poste():
                     # Etape 2 : Verifier si l'input commentaire et accesible et utilisable
                     commentBox = self.__divContentLePoste.find_elements(By.CSS_SELECTOR, "div[contenteditable='true']")
                     script = "arguments[0].innerHTML = ''"
-                    print ( commentBox )
+                    
+                    #print ( commentBox )
+                    
                     self.__bot.execute_script(script, commentBox[0] )
 
-                    print ( "Poste commentable" )
+                    Utils.logApp.info ( "Poste commentable" )
                 
                 except ( JavascriptException, IndexError ) :
                     raise PosteNonValable()
@@ -302,9 +304,7 @@ class Poste():
 
                 nbButtonLikeClicker = 0
                 for button in __divInteractionByXpath :
-                    
-                    Utils.logFonction.info ( button.text )
-                    
+                                    
                     if button.text == "Like" or button.text == "J’aime":
                         
                         button.click()
