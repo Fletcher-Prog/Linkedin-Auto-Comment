@@ -32,7 +32,7 @@ class Poste():
     nbDejaCommenter        : int = 0
     countAddPostInPage     : int = 0
     tableauDeMotMotsExclus : str = ["recherche d'alternance","recherche de stage","Je suis actuellement à la recherche ","Je suis à la recherche "]
-    nomCreateurAEsquiver   : str = ["nathalie scott","Linkedin"]
+    nomCreateurAEsquiver   : str = ["nathalie scott","Linkedin","Jérôme Dubost"]
 
     # Définition et assignation d'un valeur au attribut d'instance
     def __init__( self, bot:WebDriver ) -> None:
@@ -306,8 +306,8 @@ class Poste():
                 for button in __divInteractionByXpath :
                                     
                     if button.text == "Like" or button.text == "J’aime":
-                        
-                        button.click()
+    
+                        self.__bot.execute_script( "arguments[0].click();", button )
                         
                         nbButtonLikeClicker +=1
                         
@@ -339,23 +339,13 @@ class Poste():
 
                     nbButtonLikeClicker = 0
                     for button in __divInteraction :
-                        
-                        Utils.logFonction.info ( button.text )
-                        
+                                                
                         if button.text == "Like" or button.text == "J’aime":
 
-                            # Déplacer le curseur de la souris sur l'élément
-                            self.actions.move_to_element(button)
-
-                            # Cliquer sur l'élément
-                            self.actions.click()
-
-                            # Exécuter les actions
-                            self.actions.perform()
-
+                            self.__bot.execute_script( "arguments[0].click();", button )
                             nbButtonLikeClicker +=1
 
-                            # si il ya 3 ou plus de poste alors j'en like 2 sinon j'en like 1
+                            # si il ya 3 ou plus de commentaire alors j'en like 2 sinon j'en like 1
                             if nbButtonLike >= 3 and nbButtonLikeClicker == 2 or nbButtonLike < 3 and nbButtonLikeClicker == 1:
                                 self.estLiker = True
                                 
