@@ -6,8 +6,6 @@ from datetime import datetime
 import env
 
 lancer = True
-nbPosteInteractionAujourdhui = 250
-
 
 Utils.connextion(env.emailLinkedin,env.passwordLinkedin,15)
 
@@ -29,14 +27,10 @@ while True :
 
     if datetime.now().strftime("%H:%M:%S") == "07:00:00" or lancer == True:
         
-        lancer = False
-        
-        if lancer != True :
-            nbPosteInteractionAujourdhui = randint(140,280)
-        
-        
-        Utils.logging.warning("Nombre de poste aujourd'hui : {tkt} ".format( tkt=nbPosteInteractionAujourdhui ) )
+        nbPosteInteractionAujourdhui = randint(140,280)
 
+        Utils.logApp.warning("Nombre de poste aujourd'hui : {tkt} ".format( tkt=nbPosteInteractionAujourdhui ) )
+        
         while True :
 
             tkt = Poste(Utils.bot)
@@ -57,29 +51,30 @@ while True :
 
             
             tempAttente = randint(15,30)
-            Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+            Utils.logApp.warning( "Attente de {temp} s commencer a {heure} \n {tktt}".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente, tktt=tkt.toString() ) )
             time.sleep(tempAttente)
 
             if randint( 0,2 ) == 1 :
                 tempAttente = randint(30,60)
-                Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                Utils.logAppGeneral.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                 time.sleep(tempAttente)
 
-            if randint( 0,5 ) == 4:
+            if randint( 0, 15 ) == 4:
                 tempAttente = randint(60,120)
-                Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                Utils.logAppGeneral.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                 time.sleep(tempAttente)
             
-            if randint( 0,15 ) == 14 :
+            if randint( 0, 30 ) == 14 :
                 tempAttente = randint(120,240)
-                Utils.logging.warning( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
+                Utils.logAppGeneral.info( "Attente de {temp} s commencer a {heure} ".format( heure=datetime.now().strftime("%H:%M:%S"), temp=tempAttente ) )
                 time.sleep(tempAttente)
-            
+                    
+
             i += 1  
 
         if boucleFini == True:
             boucleFini = False
-            Utils.logging.warning( "Le nombre de poste commenter et de {i} \t et le nombre de pose a faire aujourd'hui {i1} ".format( i=i, i1=nbPosteInteractionAujourdhui ) ) 
+            Utils.logAppGeneral.info( "Le nombre de poste commenter et de {i} \t et le nombre de pose a faire aujourd'hui {i1} ".format( i=i, i1=nbPosteInteractionAujourdhui ) ) 
 
 
 

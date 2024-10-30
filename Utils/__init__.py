@@ -2,10 +2,6 @@ from .connextion   import *
 from .Exception    import *
 from .checkCode2Fa import *
 
-
-
-
-
 # Selenuim
 # Configuration et lancement de WebDriver
 from selenium_stealth import stealth
@@ -27,7 +23,7 @@ display = Display(visible=0, size=(1920, 1080))  # invisible=0 rend l'écran non
 display.start()
 
 
-# Systeme de logging
+# Système de logging
 import logging
 import os
 import sys
@@ -45,28 +41,33 @@ if not os.path.exists(log_directory):
 
 # Création de deux loggers distincts
 logApp = logging.getLogger('logApp')
-logFonction = logging.getLogger('logFonction')
+logAppGeneral = logging.getLogger('logAppGeneral')
 
-# Définir le niveau de log des deux loggers à INFO
+# Définir le niveau de log des deux loggers à INFO pour capter tous les niveaux d'infos
 logApp.setLevel(logging.INFO)
-logFonction.setLevel(logging.INFO)
+logAppGeneral.setLevel(logging.INFO)
 
-# Création des handlers pour écrire dans deux fichiers différents
-handler1 = logging.FileHandler('logs/time.log')
-handler2 = logging.FileHandler('logs/app.log')
+# --- Log App ---
+# Handler pour les logs de WARNING et plus
+app_warning_handler = logging.FileHandler(os.path.join(log_directory, 'logEtatGeneral.log'))
+app_warning_handler.setLevel(logging.WARNING)
+
+# --- Log Fonction ---
+# Handler pour les logs d'INFO et plus
+fonction_info_handler = logging.FileHandler(os.path.join(log_directory, 'logEtatDetailler.log'))
+fonction_info_handler.setLevel(logging.INFO)
+
 
 # Création d'un format pour les logs
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Assigner le format aux handlers
-handler1.setFormatter(formatter)
-handler2.setFormatter(formatter)
+app_warning_handler.setFormatter(formatter)
+fonction_info_handler.setFormatter(formatter)
 
 # Ajouter les handlers aux loggers
-logApp.addHandler(handler1)
-logFonction.addHandler(handler2)
-
-
+logApp.addHandler(app_warning_handler)
+logAppGeneral.addHandler(fonction_info_handler)
 
 #options = Options()
 options = webdriver.FirefoxOptions()
@@ -114,7 +115,6 @@ bot = webdriver.Firefox( service=Service( GeckoDriverManager().install() ), opti
 bot.set_window_size( 800,800 )
 
 # Step 4: Scrape using Stealth
-#enable stealth mode
 # stealth(bot,
 #         languages=["en-US", "en"],
 #         vendor="Google Inc.",
