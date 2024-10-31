@@ -33,7 +33,7 @@ class Poste():
     nbDejaCommenter        : int = 0
     countAddPostInPage     : int = 0
     tableauDeMotMotsExclus : str = ["recherche d'alternance","recherche de stage","Je suis actuellement à la recherche ","Je suis à la recherche "]
-    nomCreateurAEsquiver   : str = ["nathalie scott","Linkedin","Jérôme Dubost", "Thibaut Renaut"]
+    nomCreateurAEsquiver   : str = ["Nathalie Scott, UXMCN","Linkedin","Jérôme Dubost", "Thibaut Renaut"]
 
     # Définition et assignation d'un valeur au attribut d'instance
     def __init__( self, bot:WebDriver ) -> None:
@@ -143,7 +143,7 @@ class Poste():
         if self.commenter() == "True" :
             self.liker()
             # Utils.logAppGeneral.info( self.toString() )
-        elif Poste.nbDejaCommenter >= 5 :
+        elif Poste.nbDejaCommenter >= 15 :
             self._addPosteInPage()
             Utils.logAppGeneral.info("\n Page Refresh suite a de nombreux poste deja commenter \n " )
 
@@ -357,7 +357,7 @@ class Poste():
 
                 
                 except TimeoutException:
-                    Utils.logAppGeneral.info ( "2: Div Interaction non Trouvais fonction liker" )
+                    Utils.logAppGeneral.info ( "2: Div Interaction non Trouvais " )
                     pass
                     
             cpt+=1
