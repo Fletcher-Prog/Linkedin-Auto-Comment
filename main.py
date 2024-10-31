@@ -27,7 +27,7 @@ while True :
 
     if datetime.now().strftime("%H:%M:%S") == "07:00:00" or lancer == True:
         
-        nbPosteInteractionAujourdhui = randint(140,280)
+        nbPosteInteractionAujourdhui = randint(60,140)
 
         Utils.logApp.warning("Nombre de poste aujourd'hui : {tkt} ".format( tkt=nbPosteInteractionAujourdhui ) )
         
